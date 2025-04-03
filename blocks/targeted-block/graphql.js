@@ -23,6 +23,8 @@ const getCustomerInfo = async () => {
             lastname
             suffix
             email
+            date_of_birth
+            gender
             addresses {
               firstname
               lastname
@@ -35,6 +37,13 @@ const getCustomerInfo = async () => {
               postcode
               country_code
               telephone
+            }
+            custom_attributes {
+              ... on AttributeValue {
+                code
+                value
+              }
+              code
             }
           }
         }
