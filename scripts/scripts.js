@@ -37,6 +37,9 @@ async function pushUserDataToDataLayer() {
           firstname: userInfo.firstname,
           lastname: userInfo.lastname,
           userEmail: userInfo.email,
+          dop:userInfo.date_of_birth,
+          gender:userInfo.gender,
+          age:userInfo.custom_attributes.find(attr => attr.code === "ageofcustomer")?.value,
           userId:encodeBase64Email(userInfo.email)
         },
       });
