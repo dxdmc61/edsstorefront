@@ -38,7 +38,7 @@ async function pushUserDataToDataLayer() {
           lastname: userInfo.lastname,
           userEmail: userInfo.email,
           dob:userInfo.date_of_birth,
-          gender:userInfo.gender,
+          gender:userInfo.gender == 1 ? 'Male':'Female',
           age:userInfo.custom_attributes.find(attr => attr.code === "ageofcustomer")?.value,
           userId:encodeBase64Email(userInfo.email)
         },
