@@ -56,6 +56,7 @@ async function pushUserDataToDataLayer() {
   } catch (error) {
     console.error('Error fetching user data:', error);
   }
+  _satellite.track("setGlobal1");
   _satellite.track("event50");
 }
 function encodeBase64Email(email) {
