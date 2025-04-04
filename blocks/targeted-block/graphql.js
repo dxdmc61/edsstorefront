@@ -59,7 +59,7 @@ const getCustomerInfo = async () => {
         method: 'GET',
       }
     );
-
+    debuuger;
     const customerData = response.data?.customer || null;
 
     // Store fetched data in sessionStorage if it exists
