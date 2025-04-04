@@ -37,6 +37,10 @@ function triggerAdobeEvent(eventName, maxAttempts = 16, interval = 300) {
       }
   })(maxAttempts);
 }
+document.addEventListener("DOMContentLoaded", function () {
+  triggerAdobeEvent("setGlobal1");
+  triggerAdobeEvent("event50");
+});
 // Function to push user information into Adobe Data Layer
 async function pushUserDataToDataLayer() {
   try {
@@ -68,8 +72,6 @@ async function pushUserDataToDataLayer() {
   } catch (error) {
     console.error('Error fetching user data:', error);
   }
-  triggerAdobeEvent("setGlobal1");
-  triggerAdobeEvent("event50");
 }
 function encodeBase64Email(email) {
   return btoa(email);
