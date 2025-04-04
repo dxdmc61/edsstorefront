@@ -28,8 +28,8 @@ import {getCustomerInfo} from '../blocks/targeted-block/graphql.js'
 function triggerAdobeEvent(eventName, maxAttempts = 16, interval = 300) {
   (function retryTrack(attemptsLeft) {
       if (typeof _satellite !== "undefined" && _satellite.track) {
-          _satellite.track(setGlobal1);
-          _satellite.track(event50);
+          _satellite.track("setGlobal1");
+          _satellite.track("event50");
           _satellite.track(eventName);
           console.log(`Adobe Launch event "${eventName}" fired.`);
       } else if (attemptsLeft > 0) {
