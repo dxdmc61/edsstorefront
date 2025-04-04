@@ -25,6 +25,14 @@ import { trackHistory } from './commerce.js';
 import initializeDropins from './initializers/index.js';
 import {getCustomerInfo} from '../blocks/targeted-block/graphql.js'
 
+(function() {
+  if (!document.querySelector('script[src*="adobedtm.com"]')) {
+      var script = document.createElement("script");
+      script.src = "https://assets.adobedtm.com/091296e21369/a358defaaab5/launch-9766d72633cb-development.min.js";
+      script.async = true;
+      document.head.appendChild(script);
+  }
+})();
 // Function to push user information into Adobe Data Layer
 async function pushUserDataToDataLayer() {
   try {
@@ -257,10 +265,16 @@ async function loadEager(doc) {
       const { preloadCategory } = await import('/blocks/product-list-page-custom/product-list-page-custom.js');
       preloadCategory({ id: category, urlPath: urlpath });
     }
-  } else if (document.body.querySelector('main .commerce-cart')) {
+  } 
+  else if (document.body.querySelector('main .product-details')) {
+    _satellite.track("productDetails20");
+  } 
+  else if (document.body.querySelector('main .commerce-cart')) {
     pageType = 'Cart';
+    _satellite.track("cart20");
   } else if (document.body.querySelector('main .commerce-checkout')) {
     pageType = 'Checkout';
+    _satellite.track("checkout20");
   }
 
   window.adobeDataLayer.push(
