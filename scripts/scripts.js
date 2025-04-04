@@ -25,14 +25,18 @@ import { trackHistory } from './commerce.js';
 import initializeDropins from './initializers/index.js';
 import {getCustomerInfo} from '../blocks/targeted-block/graphql.js'
 
-(function() {
-  if (!document.querySelector('script[src*="adobedtm.com"]')) {
-      var script = document.createElement("script");
-      script.src = "https://assets.adobedtm.com/091296e21369/a358defaaab5/launch-9766d72633cb-development.min.js";
-      script.async = true;
-      document.head.appendChild(script);
-  }
-})();
+function triggerAdobeEvent(eventName, maxAttempts = 16, interval = 300) {
+  (function retryTrack(attemptsLeft) {
+      if (typeof _satellite !== "undefined" && _satellite.track) {
+          _satellite.track(eventName);
+          console.log(`Adobe Launch event "${eventName}" fired.`);
+      } else if (attemptsLeft > 0) {
+          setTimeout(() => retryTrack(attemptsLeft - 1), interval);
+      } else {
+          console.warn(`Adobe Launch _satellite.track("${eventName}") was not available.`);
+      }
+  })(maxAttempts);
+}
 // Function to push user information into Adobe Data Layer
 async function pushUserDataToDataLayer() {
   try {
@@ -64,8 +68,8 @@ async function pushUserDataToDataLayer() {
   } catch (error) {
     console.error('Error fetching user data:', error);
   }
-  _satellite.track("setGlobal1");
-  _satellite.track("event50");
+  triggerAdobeEvent("setGlobal1");
+  triggerAdobeEvent("event50");
 }
 function encodeBase64Email(email) {
   return btoa(email);
@@ -267,14 +271,14 @@ async function loadEager(doc) {
     }
   } 
   else if (document.body.querySelector('main .product-details')) {
-    _satellite.track("productDetails20");
+    triggerAdobeEvent("productDetails20");
   } 
   else if (document.body.querySelector('main .commerce-cart')) {
     pageType = 'Cart';
-    _satellite.track("cart20");
+    triggerAdobeEvent("cart20");
   } else if (document.body.querySelector('main .commerce-checkout')) {
     pageType = 'Checkout';
-    _satellite.track("checkout20");
+    triggerAdobeEvent("checkout20");
   }
 
   window.adobeDataLayer.push(
