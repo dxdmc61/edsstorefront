@@ -240,7 +240,7 @@ async function loadEager(doc) {
   let pageType = 'CMS';
   if (document.body.querySelector('main .product-details')) {
     pageType = 'Product';
-
+    triggerAdobeEvent("productDetails20");
     // initialize pdp
     await import('./initializers/pdp.js');
 
@@ -263,15 +263,11 @@ async function loadEager(doc) {
     pageType = 'Category';
     const plpBlock = document.body.querySelector('main .product-list-page-custom');
     const { category, urlpath } = readBlockConfig(plpBlock);
-
     if (category && urlpath) {
       // eslint-disable-next-line import/no-unresolved, import/no-absolute-path
       const { preloadCategory } = await import('/blocks/product-list-page-custom/product-list-page-custom.js');
       preloadCategory({ id: category, urlPath: urlpath });
     }
-  } 
-  else if (document.body.querySelector('main .product-details')) {
-    triggerAdobeEvent("productDetails20");
   } 
   else if (document.body.querySelector('main .commerce-cart')) {
     pageType = 'Cart';
