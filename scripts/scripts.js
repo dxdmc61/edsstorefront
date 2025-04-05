@@ -54,6 +54,11 @@ import {getCustomerInfo} from '../blocks/targeted-block/graphql.js'
         eventName: 'shopping-cart-view',
         adobeEvents: ['cart20', 'event50']
       });
+      handlePageEvent({
+        selector: '.order-confirmation',
+        eventName: 'place-order',
+        adobeEvents: ['purchase20', 'event50']
+      });
 
     });
   } else {
