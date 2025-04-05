@@ -77,7 +77,7 @@ import {getCustomerInfo} from '../blocks/targeted-block/graphql.js'
           adobeDataLayer.removeEventListener('event', listener);
         }
       };
-      adobeDataLayer.addEventListener('eventName', listener);
+      adobeDataLayer.addEventListener(eventName, listener);
     }
   }
 
