@@ -253,7 +253,7 @@ async function loadEager(doc) {
   let pageType = 'CMS';
   if (document.body.querySelector('main .product-details')) {
     pageType = 'Product';
-    triggerAdobeEvent("productDetails20");
+    //triggerAdobeEvent("productDetails20");
     // initialize pdp
     await import('./initializers/pdp.js');
 
@@ -284,10 +284,10 @@ async function loadEager(doc) {
   } 
   else if (document.body.querySelector('main .commerce-cart')) {
     pageType = 'Cart';
-    triggerAdobeEvent("cart20");
+   // triggerAdobeEvent("cart20");
   } else if (document.body.querySelector('main .commerce-checkout')) {
     pageType = 'Checkout';
-    triggerAdobeEvent("checkout20");
+    //triggerAdobeEvent("checkout20");
   }
 
   window.adobeDataLayer.push(
