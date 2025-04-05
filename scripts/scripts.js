@@ -25,22 +25,33 @@ import { trackHistory } from './commerce.js';
 import initializeDropins from './initializers/index.js';
 import {getCustomerInfo} from '../blocks/targeted-block/graphql.js'
 
-function triggerAdobeEvent(eventName, maxAttempts = 16, interval = 300) {
-  (function retryTrack(attemptsLeft) {
+(function listenForUserInfo() {
+  if (window.adobeDataLayer) {
+    adobeDataLayer.push(function () {
+      adobeDataLayer.addEventListener('user-info', function () {
+        console.log('user-info event detected in adobeDataLayer');
+        triggerAdobeEvent("setGlobal1");
+        triggerAdobeEvent("event50");
+      });
+    });
+  } else {
+    // Retry if adobeDataLayer not yet defined
+    setTimeout(listenForUserInfo, 300);
+  }
+
+  function triggerAdobeEvent(eventName, maxAttempts = 10, interval = 300) {
+    (function retryTrack(attemptsLeft) {
       if (typeof _satellite !== "undefined" && _satellite.track) {
-          setTimeout(() => {
-          _satellite.track(eventName);
-          _satellite.track("setGlobal1");
-          _satellite.track("event50");
-          console.log(`Adobe Launch event "${eventName}" fired.`);
-          }, 400);
+        _satellite.track(eventName);
+        console.log(`Adobe Launch event "${eventName}" fired.`);
       } else if (attemptsLeft > 0) {
-          setTimeout(() => retryTrack(attemptsLeft - 1), interval);
+        setTimeout(() => retryTrack(attemptsLeft - 1), interval);
       } else {
-          console.warn(`Adobe Launch _satellite.track("${eventName}") was not available.`);
+        console.warn(`_satellite.track("${eventName}") was not available.`);
       }
-  })(maxAttempts);
-}
+    })(maxAttempts);
+  }
+})();
 // Function to push user information into Adobe Data Layer
 async function pushUserDataToDataLayer() {
   try {
