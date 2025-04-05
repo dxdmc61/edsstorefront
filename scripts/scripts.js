@@ -25,20 +25,63 @@ import { trackHistory } from './commerce.js';
 import initializeDropins from './initializers/index.js';
 import {getCustomerInfo} from '../blocks/targeted-block/graphql.js'
 
-(function listenForUserInfo() {
+(function initAdobePageTracking() {
   if (window.adobeDataLayer) {
     adobeDataLayer.push(function () {
+      // 1. Checkout - user-info triggers all global + checkout
       adobeDataLayer.addEventListener('user-info', function () {
         console.log('user-info event detected in adobeDataLayer');
         triggerAdobeEvent("setGlobal1");
+        triggerAdobeEvent("checkout20");
         triggerAdobeEvent("event50");
       });
+
+      // 2. Handle specific page event tracking
+      handlePageEvent({
+        selector: '.product-details',
+        eventName: 'product-page-view',
+        adobeEvents: ['productDetails20', 'event50']
+      });
+
+      handlePageEvent({
+        selector: '.product-list-page-container',
+        eventName: 'search-request-sent',
+        adobeEvents: ['category20', 'event50']
+      });
+
+      handlePageEvent({
+        selector: '.commerce-cart',
+        eventName: 'shopping-cart-view',
+        adobeEvents: ['cart20', 'event50']
+      });
+
     });
   } else {
-    // Retry if adobeDataLayer not yet defined
-    setTimeout(listenForUserInfo, 300);
+    setTimeout(initAdobePageTracking, 300); // Retry if adobeDataLayer not defined
   }
 
+  // 🔁 Reusable page event listener function
+  function handlePageEvent({ selector, eventName, adobeEvents }) {
+    if (!document.body.querySelector(selector)) return;
+
+    const eventAlreadyFired = adobeDataLayer.some(
+      (entry) => entry.event === eventName
+    );
+
+    if (eventAlreadyFired) {
+      adobeEvents.forEach(triggerAdobeEvent);
+    } else {
+      const listener = function (e) {
+        if (e.event === eventName) {
+          adobeEvents.forEach(triggerAdobeEvent);
+          adobeDataLayer.removeEventListener('event', listener);
+        }
+      };
+      adobeDataLayer.addEventListener('event', listener);
+    }
+  }
+
+  // 🚀 Adobe Launch event trigger utility
   function triggerAdobeEvent(eventName, maxAttempts = 10, interval = 300) {
     (function retryTrack(attemptsLeft) {
       if (typeof _satellite !== "undefined" && _satellite.track) {
@@ -52,6 +95,8 @@ import {getCustomerInfo} from '../blocks/targeted-block/graphql.js'
     })(maxAttempts);
   }
 })();
+
+
 // Function to push user information into Adobe Data Layer
 async function pushUserDataToDataLayer() {
   try {
