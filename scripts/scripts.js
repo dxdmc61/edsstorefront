@@ -32,7 +32,7 @@ import {getCustomerInfo} from '../blocks/targeted-block/graphql.js'
       adobeDataLayer.addEventListener('user-info', function () {
         console.log('user-info event detected in adobeDataLayer');
         triggerAdobeEvent("setGlobal1");
-        triggerAdobeEvent("checkout20");
+        //triggerAdobeEvent("checkout20");
         triggerAdobeEvent("event50");
       });
 
@@ -58,6 +58,12 @@ import {getCustomerInfo} from '../blocks/targeted-block/graphql.js'
         selector: '.order-confirmation',
         eventName: 'place-order',
         adobeEvents: ['purchase20', 'event50']
+      });
+    
+      handlePageEvent({
+        selector: '.commerce-checkout',
+        eventName: 'page-view',
+        adobeEvents: ['checkout20', 'event50']
       });
 
     });
